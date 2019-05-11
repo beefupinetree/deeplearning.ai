@@ -187,8 +187,8 @@ print ("sanity check after reshaping: " + str(train_set_x_flatten[0:5,0]))
 # In[37]:
 
 
-train_set_x = train_set_x_orig / 255
-test_set_x = test_set_x_orig / 255
+train_set_x = train_set_x_orig.reshape(train_set_x_orig.shape[0], -1).T / 255
+test_set_x = test_set_x_orig.reshape(test_set_x_orig.shape[0], -1).T / 255
 
 
 # <font color='blue'>
@@ -480,7 +480,7 @@ def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost = False):
         
         # Cost and gradient calculation (≈ 1-4 lines of code)
         ### START CODE HERE ### 
-        0
+        grads, cost = propagate(w, b, X, Y)
         ### END CODE HERE ###
         
         # Retrieve derivatives from grads
@@ -489,8 +489,8 @@ def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost = False):
         
         # update rule (≈ 2 lines of code)
         ### START CODE HERE ###
-       0
-        0
+        w -= learning_rate * dw
+        b -= learning_rate * db
         ### END CODE HERE ###
         
         # Record the costs
@@ -576,26 +576,17 @@ def predict(w, b, X):
     
     # Compute vector "A" predicting the probabilities of a cat being present in the picture
     ### START CODE HERE ### (≈ 1 line of code)
-    A =  0
+    A =  sigmoid(np.dot(w.T, X) + b)
  
     ### END CODE HERE ###  
-    for i in range(A.shape[1]):
-        
         # Convert probabilities A[0,i] to actual predictions p[0,i]
         ### START CODE HERE ### (≈ 4 lines of code)
-       ''''
-        x_exp = np.exp(A)
-        print(x_exp)
-        x_sum = np.sum(x_exp,axis=1,keepdims=True)
-        print(x_sum)
-        s = np.divide(x_exp,x_sum)
-        '''
-        
-    Y_prediction = 1. * (A > 0.5)
+
+    Y_prediction = 1 * (A > 0.5)
         ### END CODE HERE ###
-    
+
     assert(Y_prediction.shape == (1, m))
-    
+
     return Y_prediction
 
 
@@ -648,8 +639,9 @@ print ("predictions = " + str(predict(w, b, X)))
 
 def model(X_train, Y_train, X_test, Y_test, num_iterations = 2000, learning_rate = 0.5, print_cost = False):
     """
-    Builds the logistic regression model by calling the function you've implemented previously
-    
+    Builds the logistic regression model by calling the function you've
+    implemented previously
+
     Arguments:
     X_train -- training set represented by a numpy array of shape (num_px * num_px * 3, m_train)
     Y_train -- training labels represented by a numpy array (vector) of shape (1, m_train)
@@ -662,22 +654,22 @@ def model(X_train, Y_train, X_test, Y_test, num_iterations = 2000, learning_rate
     Returns:
     d -- dictionary containing information about the model.
     """
-    
+
     ### START CODE HERE ###
-    
+
     # initialize parameters with zeros (≈ 1 line of code)
-    0
+    w, b = initialize_with_zeros(X_train.shape[0])
 
     # Gradient descent (≈ 1 line of code)
-    0
-    
+    params, grads, costs = optimize(w, b, X_train, Y_train, num_iterations, learning_rate, print_cost)
+
     # Retrieve parameters w and b from dictionary "parameters"
-   0
-    0
-    
+    w = params["w"]
+    b = params["b"]
+
     # Predict test/train set examples (≈ 2 lines of code)
-    0
-    0
+    Y_prediction_train = predict(w, b, X_train)
+    Y_prediction_test = predict(w, b, X_test)
 
     ### END CODE HERE ###
 
@@ -815,17 +807,17 @@ plt.show()
 
 
 ## START CODE HERE ## (PUT YOUR IMAGE NAME) 
-my_image = "my_image.jpg"   # change this to the name of your image file 
-## END CODE HERE ##
-
-# We preprocess the image to fit your algorithm.
-fname = "images/" + my_image
-image = np.array(ndimage.imread(fname, flatten=False))
-my_image = scipy.misc.imresize(image, size=(num_px,num_px)).reshape((1, num_px*num_px*3)).T
-my_predicted_image = predict(d["w"], d["b"], my_image)
-
-plt.imshow(image)
-print("y = " + str(np.squeeze(my_predicted_image)) + ", your algorithm predicts a \"" + classes[int(np.squeeze(my_predicted_image)),].decode("utf-8") +  "\" picture.")
+#my_image = "my_image.jpg"   # change this to the name of your image file 
+### END CODE HERE ##
+#
+## We preprocess the image to fit your algorithm.
+#fname = "images/" + my_image
+#image = np.array(ndimage.imread(fname, flatten=False))
+#my_image = scipy.misc.imresize(image, size=(num_px,num_px)).reshape((1, num_px*num_px*3)).T
+#my_predicted_image = predict(d["w"], d["b"], my_image)
+#
+#plt.imshow(image)
+#print("y = " + str(np.squeeze(my_predicted_image)) + ", your algorithm predicts a \"" + classes[int(np.squeeze(my_predicted_image)),].decode("utf-8") +  "\" picture.")
 
 
 # <font color='blue'>
